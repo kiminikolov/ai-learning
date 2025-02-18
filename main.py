@@ -11,7 +11,7 @@ client = OpenAI(
 )
 
 
-def get_response(user_input: str) -> str:
+def get_text_response(user_input: str) -> str:
     try:
         completion = client.chat.completions.create(
             model="gpt-4o-mini",
@@ -35,7 +35,7 @@ def get_response(user_input: str) -> str:
         return f"An error occurred {str(e)}"
 
 
-def start_conversation() -> None:
+def start_text_conversation() -> None:
     print("Welcome to the Taxi Dispatcher Assistant. Type 'exit' to quit the conversation.")
 
     while True:
@@ -44,9 +44,19 @@ def start_conversation() -> None:
         if user_input.lower() == 'exit':
             break
 
-        assistant_response = get_response(user_input)
+        assistant_response = get_text_response(user_input)
         print(f"Assistant: {assistant_response}")
 
 
+def get_audio_transcription() -> str:
+    audio_file = open('./audio_file.mp3', 'rb')
+    transcription = client.audio.transcriptions.create(
+        model='whisper-1',
+        file=audio_file,
+    )
+
+    return transcription.text
+
+
 if __name__ == "__main__":
-    start_conversation()
+    print(get_audio_transcription())
